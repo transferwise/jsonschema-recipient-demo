@@ -45,8 +45,27 @@ public class Demo {
 			renderAllOfSchema(schema, tabs);
 		} else if (schema.has("oneOf")){
 			renderOneOfSchema(schema, tabs);
-		} else {
-			renderObjectSchema(schema, nodeName, tabs);
+		} else { //must have a type schema
+			switch (schema.get("type").asText()) {
+				case "object":
+					renderObjectSchema(schema, tabs);
+					break;
+				case "array":
+					renderArraySchema(schema, nodeName, tabs);
+					break;
+				case "string":
+					renderStringSchema(nodeName, tabs);
+					break;
+				case "number":
+					renderNumberSchema(nodeName, tabs);
+					break;
+				case "integer":
+					renderIntegerSchema(nodeName, tabs);
+					break;
+				case "boolean":
+					renderBooleanSchema(nodeName, tabs);
+					break;
+			}
 		}
 	}
 
@@ -75,30 +94,7 @@ public class Demo {
 		System.out.println("-------end oneOf--");
 	}
 
-	void renderObjectSchema(JsonNode schema, String nodeName, int tabs) {
-		switch (schema.get("type").asText()) {
-			case "object":
-				renderPropertiesSchema(schema, tabs);
-				break;
-			case "array":
-				renderArraySchema(schema, nodeName, tabs);
-				break;
-			case "string":
-				renderStringSchema(nodeName, tabs);
-				break;
-			case "number":
-				renderNumberSchema(nodeName, tabs);
-				break;
-			case "integer":
-				renderIntegerSchema(nodeName, tabs);
-				break;
-			case "boolean":
-				renderBooleanSchema(nodeName, tabs);
-				break;
-		}
-	}
-
-	private void renderPropertiesSchema(JsonNode schema, int tabs) {
+	private void renderObjectSchema(JsonNode schema, int tabs) {
 		Iterator<Map.Entry<String, JsonNode>> entries = schema.get("properties").getFields();
 		while(entries.hasNext()) {
 			Map.Entry<String, JsonNode> next = entries.next();
