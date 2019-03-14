@@ -42,15 +42,15 @@ public class Demo {
 
 	private void renderSchema(JsonNode schema, String nodeName, int tabs) {
 		if (schema.has("allOf")){
-			handleAllOf(schema, tabs);
+			renderAllOfSchema(schema, tabs);
 		} else if (schema.has("oneOf")){
-			handleOneOf(schema, tabs);
+			renderOneOfSchema(schema, tabs);
 		} else {
-			renderObject(schema, nodeName, tabs);
+			renderObjectSchema(schema, nodeName, tabs);
 		}
 	}
 
-	private void handleAllOf(JsonNode schema, int tabs) {
+	private void renderAllOfSchema(JsonNode schema, int tabs) {
 		printTabs(tabs);
 		System.out.println("-------allOf------");
 		for (JsonNode entry : schema.get("allOf")) {
@@ -60,7 +60,7 @@ public class Demo {
 		System.out.println("-------end allOf--");
 	}
 
-	private void handleOneOf(JsonNode schema, int tabs) {
+	private void renderOneOfSchema(JsonNode schema, int tabs) {
 		printTabs(tabs);
 		System.out.println("-------oneOf------");
 		Iterator<JsonNode> nodes = schema.get("oneOf").getElements();
@@ -75,38 +75,67 @@ public class Demo {
 		System.out.println("-------end oneOf--");
 	}
 
-	void renderObject(JsonNode schema, String nodeName, int tabs) {
+	void renderObjectSchema(JsonNode schema, String nodeName, int tabs) {
 		switch (schema.get("type").asText()) {
 			case "object":
-				Iterator<Map.Entry<String, JsonNode>> entries = schema.get("properties").getFields();
-				while(entries.hasNext()) {
-					Map.Entry<String, JsonNode> next = entries.next();
-					renderSchema(next.getValue(), next.getKey(), tabs + 1);
-				}
+				renderPropertiesSchema(schema, tabs);
 				break;
-				case "array":
-				printTabs(tabs);
-				System.out.println("array: [");
-				renderSchema(schema.get("items"), nodeName, tabs + 1);
-				printTabs(tabs);
-				System.out.println("]");
+			case "array":
+				renderArraySchema(schema, nodeName, tabs);
 				break;
 			case "string":
-				printTabs(tabs);
-				System.out.print("string: " + nodeName);
-				System.out.println();
+				renderStringSchema(nodeName, tabs);
 				break;
 			case "number":
-				printTabs(tabs);
-				System.out.print("number: " + nodeName);
-				System.out.println();
+				renderNumberSchema(nodeName, tabs);
+				break;
+			case "integer":
+				renderIntegerSchema(nodeName, tabs);
 				break;
 			case "boolean":
-				printTabs(tabs);
-				System.out.print("bool: " + nodeName);
-				System.out.println();
+				renderBooleanSchema(nodeName, tabs);
 				break;
 		}
+	}
+
+	private void renderPropertiesSchema(JsonNode schema, int tabs) {
+		Iterator<Map.Entry<String, JsonNode>> entries = schema.get("properties").getFields();
+		while(entries.hasNext()) {
+			Map.Entry<String, JsonNode> next = entries.next();
+			renderSchema(next.getValue(), next.getKey(), tabs + 1);
+		}
+	}
+
+	private void renderArraySchema(JsonNode schema, String nodeName, int tabs) {
+		printTabs(tabs);
+		System.out.println("array: [");
+		renderSchema(schema.get("items"), nodeName, tabs + 1);
+		printTabs(tabs);
+		System.out.println("]");
+	}
+
+	private void renderStringSchema(String nodeName, int tabs) {
+		printTabs(tabs);
+		System.out.print("string: " + nodeName);
+		System.out.println();
+	}
+
+	private void renderNumberSchema(String nodeName, int tabs) {
+		printTabs(tabs);
+		System.out.print("number: " + nodeName);
+		System.out.println();
+	}
+
+	private void renderIntegerSchema(String nodeName, int tabs) {
+		printTabs(tabs);
+		System.out.print("integer: " + nodeName);
+		System.out.println();
+	}
+
+	private void renderBooleanSchema(String nodeName, int tabs) {
+		printTabs(tabs);
+		System.out.print("bool: " + nodeName);
+		System.out.println();
 	}
 
 	private void printTabs(int tabs) {
