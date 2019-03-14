@@ -42,15 +42,15 @@ public class Demo {
 
 	private void renderSchema(JsonNode schema, String nodeName, int tabs) {
 		if (schema.has("allOf")){
-			handleAllOf(tabs, schema);
+			handleAllOf(schema, tabs);
 		} else if (schema.has("oneOf")){
-			handleOneOf(tabs, schema);
+			handleOneOf(schema, tabs);
 		} else {
 			renderObject(schema, nodeName, tabs);
 		}
 	}
 
-	private void handleAllOf(int tabs, JsonNode schema) {
+	private void handleAllOf(JsonNode schema, int tabs) {
 		printTabs(tabs);
 		System.out.println("-------allOf------");
 		for (JsonNode entry : schema.get("allOf")) {
@@ -60,7 +60,7 @@ public class Demo {
 		System.out.println("-------end allOf--");
 	}
 
-	private void handleOneOf(int tabs, JsonNode schema) {
+	private void handleOneOf(JsonNode schema, int tabs) {
 		printTabs(tabs);
 		System.out.println("-------oneOf------");
 		Iterator<JsonNode> nodes = schema.get("oneOf").getElements();
