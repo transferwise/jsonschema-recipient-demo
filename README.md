@@ -1,7 +1,7 @@
 # JSON schema recipient demo
 A small demo to show how JSON schema can be parsed by jackson and rendered recursively.
 
-The repo demonstates to partners how to process the JSOn schema dynamic forms format to be returned in v2 of the TransferWise API.
+The repo demonstrates to partners how to process the JSON schema dynamic forms format to be returned in v2 of the TransferWise API.
 
 Expected output:
 ```
